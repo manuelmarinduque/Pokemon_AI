@@ -28,7 +28,7 @@ def Crear_Pokemon():
     cursor = conexion.cursor()
     pokemones = []
 
-    for i in range(3):
+    for i in range(6):
         valor = random.randint(1,100)
         cursor.execute(f"SELECT * FROM Pokemom WHERE Identificator = {valor}")
         pokemones_select = cursor.fetchall()
@@ -50,6 +50,7 @@ def Crear_Pokemon():
 def damage(pok1, pok2, ataque):
 
     a = pok1[6]
+   
     p = ataque[2]
     d = pok2[7]
     b = 1
