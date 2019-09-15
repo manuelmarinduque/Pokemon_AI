@@ -7,7 +7,7 @@ def Crear_Pokemon():
     cursor = conexion.cursor()
     pokemones = []
 
-    for i in range(3):
+    for i in range(6):
         valor = random.randint(1,100)
         cursor.execute(f"SELECT * FROM Pokemom WHERE Identificator = {valor}")
         pokemones_select = cursor.fetchall()
@@ -26,6 +26,6 @@ def Crear_Pokemon():
     conexion.close()
     return pokemones
 
-Pokems = Crear_Pokemon()
-print(Pokems)
+#Pokems = Crear_Pokemon()
+#print(Pokems)
 
