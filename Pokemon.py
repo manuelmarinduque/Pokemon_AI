@@ -50,6 +50,7 @@ def Crear_Pokemon():
 def damage(pok1, pok2, ataque):
 
     a = pok1[6]
+   
     p = ataque[2]
     d = pok2[7]
     b = 1
