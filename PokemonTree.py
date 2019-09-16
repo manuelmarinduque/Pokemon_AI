@@ -36,8 +36,8 @@ class Arbol:
                 nivelInicial = self.listaAbierta[i-1].nivel
                 
                 while(nivelInicial  ==  (self.listaAbierta[i-1].nivel)):
-                    print(nivelInicial, "|" ,   (self.listaAbierta[i-1].nivel))
-                    print(nivelParada)
+                    #print(nivelInicial, "|" ,   (self.listaAbierta[i-1].nivel))
+                    #print(nivelParada)
                     if(self.listaAbierta[i-1].turno == 2):
                         turno = 1
                         self.llenarListaAtaque(self.pokemonMaquina)
@@ -101,7 +101,8 @@ class Arbol:
             if(padre.tipo == "Raiz"):
                 menor.append(lista[i])
             if(lista[i].padre == padre and padre.tipo == "Raiz"):
-                return lista[i].ataque = ataqueseleccionado(menor)
+                lista[i].ataque = ataqueseleccionado(menor)
+                return lista[i].ataque
                 
             
 
@@ -190,7 +191,7 @@ class Jugador:
 def ataqueseleccionado(lista):
     ataque = lista[0].ataque
 
-    print(ataque.nombre)
+
     return ataque
 
 def mayorLista(lista):
@@ -255,7 +256,7 @@ def jugadaJugador(pokemonJugador = None, pokemonContrincante = None, ataque=[]):
 
 def poderMaquina(pokemonMaquina, pokemonContrincante):
     ataque = Arbol(pokemonMaquina, pokemonContrincante).NodoObjetivo()
-    print(ataque.nombre)
+
     return Arbol(pokemonMaquina, pokemonContrincante).NodoObjetivo()
     
 
