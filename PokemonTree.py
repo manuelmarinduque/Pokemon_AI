@@ -52,7 +52,7 @@ class Arbol:
                             self.crearNodos(turno, (self.listaAbierta[i-1].nivel)+1, self.listaAbierta[i-1])
                     print("nivel", self.listaAbierta[-1].nivel, len(self.listaAbierta), turno, )
                     i-= 1
-                    input()
+                    #input()
                 
                 nivelParada += 1
                 
@@ -62,17 +62,27 @@ class Arbol:
     def minMax(self, lista):
         padre = lista[-1].padre
         acumulado = 0
-        for i in range(len(lista)-1, 0,-1):
+        menor = []
+        """for i in range(len(lista)-1, 0,-1):
             if(lista[i].padre.tipo == "Aleatorio" and lista[i].padre == padre):
                 acumulado += lista[i].h
             if(lista[i] == padre):
                 lista[i].h = definirProbabilidad(acumulado)
                 padre = lista[i-1].padre
-                acumulado = 0
-        
-        for i in range(len(lista)):
-            if(lista[i].tipo == "Aleatorio"):
-                print(lista[i].h)
+                acumulado = 0"""
+
+        for i in range(len(lista)-1, 0, -1):
+            if(lista[i].turno == 2):
+                menor.append(lista[i])
+            if(padre == lista[i]):
+                
+            """if(lista[i].padre.tipo == "Aleatorio" and lista[i].padre == padre):
+                menor.append(lista[i])
+            if(padre == lista[i] and lista[i].tipo == "Aleatorio"):
+                lista[i].calificar(menorLista(menor))
+            if()"""
+
+
 
 
     def llenarListaAtaque(self, pokemon):
@@ -100,6 +110,7 @@ class Nodo:
         self.padre = padre
         self.ataque = ataque
         self.h = 0
+        self.calificacion = 0
 
         if(turno == 1 and padre!= None):
             self.h = np.random.choice([1,0], p=[ataque.precision / 100, 1-(ataque.precision / 100)]) * pok.damage(pkMaquina.ataque, ataque.potencial, pkJugador.defensa, ataque.tipo, pkMaquina.tipo1, pkMaquina.tipo2)
@@ -108,6 +119,8 @@ class Nodo:
             self.h = np.random.choice([1, 0], p=[ataque.precision / 100, 1-(ataque.precision / 100)]) * pok.damage(pkJugador.ataque, ataque.potencial, pkMaquina.defensa, ataque.tipo, pkJugador.tipo1, pkJugador.tipo2)
 
 
+    def calificar(menor):
+        self.calificacion = menor
         
         
 class nodoAleatorio:
@@ -116,11 +129,7 @@ class nodoAleatorio:
         self.h = 0
         self.padre = padre
         self.nivel = nivel
-        self.turno = 2
-
-def definirProbabilidad(hTotal):
-    return hTotal/4
-        
+        self.turno = 2     
     
 class Ataque:
     def __init__(self, lista=[]):
@@ -153,6 +162,17 @@ class Jugador:
         self.pokemon3 = Pokemon(lista[2])
 
 ###_______________________________________________Funciones_________________________________________________
+
+def menorLista(lista):
+    menor = lista[0].h
+    for i in range(1, len(lista)):
+        if(menor > lista[i].h):
+            menor = lista[i].h
+
+    return menor
+
+def definirProbabilidad(hTotal):
+    return hTotal/4
 
 def pokemonUsar(pokemon1 = [], pokemon2 = [], pokemon3 = [] ):
     pokemon = None
@@ -192,9 +212,7 @@ def jugadaJugador(pokemonJugador = None, pokemonContrincante = None, ataque=[]):
     daño = valorRandom *  pok.damage(pokemonJugador.ataque, ataque.potencial, pokemonContrincante.defensa, ataque.tipo, pokemonJugador.tipo1, pokemonJugador.tipo2)
     #print("daño",daño, valorRandom, probabilidad)
     pokemonContrincante.vida -= daño 
-    if(pokemonContrincante.vida <= 0 ):
-        pokemonContrincante.vivo = False
-
+    return daño
 
 def iniciarJuego():
     jugador = Jugador(player)
