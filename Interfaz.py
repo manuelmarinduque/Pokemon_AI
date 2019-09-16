@@ -92,7 +92,7 @@ while True:
 				sys.exit()
 
 			elif event.type==pygame.KEYDOWN:
-				
+
 				if event.key==K_1 and turno==1:
 					x=x-PokemonTree.jugadaJugador(PokemonJugador, PokemonMaquina, PokemonJugador.ataque1)
 					turno=2
