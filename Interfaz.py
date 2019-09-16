@@ -1,51 +1,73 @@
 import pygame, sys
 from pygame.locals import *
 import time
+import Pokemon
+import PokemonTree
+
 color=(255,255,255)
 pygame.init()
+
 #Tamaño de la ventana
 ventana=pygame.display.set_mode((500,400))
 #titulo
 pygame.display.set_caption("Pokemon")
+
 #pokemon 
-pok=["nombre",250,"Images/Bulbasaur.png","atac1","atac2","atac3","atac4"]
-pok2=["nombre",100,"Images/Charmander.png","atac1","atac2","atac3","atac4"]
-#carga imagen del vector2
-imagen = pygame.image.load(pok[2])
+pokemones = Pokemon.Crear_Pokemon()
+player = []
+machine = []
 
-imagen2 = pygame.image.load(pok2[2])
-imagen2 = pygame.transform.scale(imagen2, (90, 90))
-imagen = pygame.transform.scale(imagen, (90, 90))
+for i in range(3):
+    player.append(pokemones[i])
+
+for i in range(3,6):
+    machine.append(pokemones[i])
+
+jugador = PokemonTree.Jugador(player)
+maquina = PokemonTree.Jugador(machine)
+
+PokemonJugador = jugador.pokemon1
+PokemonMaquina = maquina.pokemon1
+print(PokemonJugador.nombre, "/", PokemonMaquina.nombre)
+
 #vida texto
-x=pok[1]
-y=pok2[1]
-miFuente=pygame.font.Font(None,30)
-#vida=pygame.font.SysFont("Arial",40)
-posX,posY= 320,100
-
-turno=1
-contx=0
-conty=0
+x = PokemonMaquina.vida
+y = PokemonJugador.vida
 
 while True:
+	
+
+	imagen2 = pygame.image.load(PokemonJugador.imagenTrasera)
+	imagen = pygame.image.load(PokemonMaquina.imagenFrente)
+
+	imagen2 = pygame.transform.scale(imagen2, (90, 90))
+	imagen = pygame.transform.scale(imagen, (90, 90))
+
+	
+	miFuente=pygame.font.Font(None,30)
+	#vida=pygame.font.SysFont("Arial",40)
+	posX,posY= 320,100
+
+	turno=1
+	contx=0
+	conty=0
 
 	ventana.fill(color)
 	#nombre y vida
 	miTexto=miFuente.render(str(x),0,(200,60,80))
-	miTexto2=miFuente.render(pok[0],0,(200,60,80))
+	miTexto2=miFuente.render(PokemonMaquina.nombre,0,(200,60,80))
 	miTexto3=miFuente.render(str(y),0,(200,60,80))
-	miTexto4=miFuente.render(pok2[0],0,(200,60,80))
+	miTexto4=miFuente.render(PokemonJugador.nombre,0,(200,60,80))
 	#ataques
 	pygame.draw.rect(ventana, (0,0,0), (25, 25, 220, 80), 5)
 	pygame.draw.rect(ventana, (0,0,0), (260, 210, 220, 80), 5)
 	pygame.draw.rect(ventana,(0,0,0),(0,300,500,100))
 	pygame.draw.rect(ventana,(255,255,255),(10,310,480,80))
-	ataque1=miFuente.render(pok[3],0,(200,60,80))
-	ataque2=miFuente.render(pok[4],0,(200,60,80))
-	ataque3=miFuente.render(pok[5],0,(200,60,80))
-	ataque4=miFuente.render(pok[6],0,(200,60,80))
+	ataque1=miFuente.render(PokemonJugador.ataque1.nombre,0,(200,60,80))
+	ataque2=miFuente.render(PokemonJugador.ataque2.nombre,0,(200,60,80))
+	ataque3=miFuente.render(PokemonJugador.ataque3.nombre,0,(200,60,80))
+	ataque4=miFuente.render(PokemonJugador.ataque4.nombre,0,(200,60,80))
 
-    
 	ventana.blit(miTexto,(30,30))
 	ventana.blit(miTexto3,(430,220))
 	ventana.blit(miTexto4,(270,265))
@@ -61,49 +83,41 @@ while True:
 	#cuadro para la vida
 	
 	#--------------------------------------------
-	
 	for event in pygame.event.get():
+
 		if event.type == QUIT:
 			pygame.quit()
 			sys.exit()
+
 		elif event.type==pygame.KEYDOWN:
 			
-
-			if event.key==K_1 and x>0 and turno==1:
-
+			if event.key==K_1 and turno==1:
 				x=x-20
+				turno=2
 				
-				turno=turno-1
-			if event.key==K_2 and x>0 and turno==1:
-
+			if event.key==K_2 and turno==1:
 				x=x-10
-			
-
-			if event.key==K_3 and x>0 and turno==1:
-
-				x=x-30
+				turno=2
 				
-
-			if event.key==K_4 and x>0 and turno==1:
-
+			if event.key==K_3 and turno==1:
+				x=x-30
+				turno=2
+				
+			if event.key==K_4 and turno==1:
 				x=x-40
-			if turno==1:
-				turno=turno-1
-
-			if y>0 and turno==0:
+				turno=2
+				
+			if turno==2 and x>0:
 				y=y-20
-				turno=turno+1
+				turno=1
+
 			if(x<=0 ):
-				x=pok[1]
-				contx=contx+1
+				PokemonMaquina.vivo = False
+				PokemonMaquina = PokemonTree.pokemonUsar(maquina.pokemon1, maquina.pokemon2, maquina.pokemon3)
+				x=PokemonMaquina.vida
 			if(y<=0 ):
-				y=pok2[1]
-				conty=conty+1
+				PokemonJugador.vivo = False
+				PokemonJugador = PokemonTree.pokemonUsar(jugador.pokemon1, jugador.pokemon2, jugador.pokemon3)
+				y=PokemonJugador.vida
 
-			if(conty==3 or contx==3):
-				sys.exit()
-    
-
-
-	#time.sleep(1)
 	pygame.display.update()
