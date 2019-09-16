@@ -47,26 +47,27 @@ def Crear_Pokemon():
     conexion.close()
     return pokemones
 
-def damage(pok1, pok2, ataque):
 
-    a = pok1[6]
-   
-    p = ataque[2]
-    d = pok2[7]
+def damage(ataque, potencial, defensaContra, tipoAtaque, tipo1Pokemon, tipo2Pokemon):
+
+    a = ataque
+    p = potencial
+    d = defensaContra
     b = 1
-    if ataque[4] == pok1[3]:
+    if tipoAtaque == tipo1Pokemon:
         b = 1.5
-    elif ataque[4] == pok1[4]:
+    elif tipoAtaque == tipo2Pokemon:
         b = 1.5
     v = random.uniform(85,100)
-    e1 = calculo_efectividad(ataque[4], pok1[3])
-    e2 = calculo_efectividad(ataque[4], pok1[4])
+    e1 = calculo_efectividad(tipoAtaque, tipo1Pokemon)
+    e2 = calculo_efectividad(tipoAtaque, tipo2Pokemon)
     e = e1*e2
     damage = 0.01*b*e*v*(((1.02*a*p)/(25.0*d))+2.0)
-    return print(f"{damage}, {a}, {p}, {d}, {b}, {v}, {e1}, {e2}")
+    return round(damage)
+    #return print(f"{damage}, {a}, {p}, {d}, {b}, {v}, {e1}, {e2}")
 
 def calculo_efectividad(tipo_ataque, tipo_pokemon):
-    
+    i = -1
     if tipo_ataque == 'Acero':
         i = 0
     if tipo_ataque == 'Agua':
@@ -105,7 +106,7 @@ def calculo_efectividad(tipo_ataque, tipo_pokemon):
         i = 17
     if tipo_ataque == None:
         return 1
-    
+    j = -1
     if tipo_pokemon == 'Acero':
         j = 0
     if tipo_pokemon == 'Agua':
@@ -144,10 +145,12 @@ def calculo_efectividad(tipo_ataque, tipo_pokemon):
         j = 17
     if tipo_pokemon == None:
         return 1
+    if(i < 0 or j < 0):
+        return 1
+    else:
+        return matriz_efectividad[i][j]
 
-    return matriz_efectividad[i][j]
-
-Pokems = Crear_Pokemon()
-print(Pokems)
-damage(Pokems[0], Pokems[1], Pokems[0][9])
+#Pokems = Crear_Pokemon()
+#print(Pokems)
+#damage(Pokems[0], Pokems[1], Pokems[0][9])
 
