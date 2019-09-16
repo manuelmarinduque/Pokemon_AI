@@ -92,19 +92,19 @@ while True:
 		elif event.type==pygame.KEYDOWN:
 			
 			if event.key==K_1 and turno==1:
-				x=x-20
+				x=x-PokemonTree.jugadaJugador(PokemonJugador, PokemonMaquina, PokemonJugador.ataque1)
 				turno=2
 				
 			if event.key==K_2 and turno==1:
-				x=x-10
+				x=x-PokemonTree.jugadaJugador(PokemonJugador, PokemonMaquina, PokemonJugador.ataque2)
 				turno=2
 				
 			if event.key==K_3 and turno==1:
-				x=x-30
+				x=x-PokemonTree.jugadaJugador(PokemonJugador, PokemonMaquina, PokemonJugador.ataque3)
 				turno=2
 				
 			if event.key==K_4 and turno==1:
-				x=x-40
+				x=x-PokemonTree.jugadaJugador(PokemonJugador, PokemonMaquina, PokemonJugador.ataque4)
 				turno=2
 				
 			if turno==2 and x>0:
