@@ -138,12 +138,13 @@ class Pokemon:
         self.vida = lista[5]
         self.ataque = lista[6]
         self.defensa = lista[7]
-        self.imagen = lista[8]
+        self.imagenFrente = lista[8]
+        self.imagenTrasera = lista[9]
         self.vivo = True
-        self.ataque1 = Ataque(lista[9])
-        self.ataque2 = Ataque(lista[10])
-        self.ataque3 = Ataque(lista[11])
-        self.ataque4 = Ataque(lista[12])
+        self.ataque1 = Ataque(lista[10])
+        self.ataque2 = Ataque(lista[11])
+        self.ataque3 = Ataque(lista[12])
+        self.ataque4 = Ataque(lista[13])
 
 class Jugador:
     def __init__(self, lista=[]):
