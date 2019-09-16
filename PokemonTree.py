@@ -29,7 +29,7 @@ class Arbol:
 
         while(nivelParada < 4):
             if(self.listaAbierta == []):
-                self.listaAbierta.append(Nodo(self.pokemonContrincante, self.pokemonMaquina, turno))
+                self.listaAbierta.append(Nodo(self.pokemonContrincante, self.pokemonMaquina, turno, 0, None, None, "Raiz"))
             else:
                 turno = None
                 i = len(self.listaAbierta)
@@ -57,7 +57,8 @@ class Arbol:
                 nivelParada += 1
                 
         
-        self.minMax(self.listaAbierta)
+        return self.minMax(self.listaAbierta)
+
       
     def minMax(self, lista):
         padre = lista[-1].padre
@@ -72,15 +73,38 @@ class Arbol:
                 acumulado = 0"""
 
         for i in range(len(lista)-1, 0, -1):
-            if(lista[i].turno == 2):
-                menor.append(lista[i])
-            if(padre == lista[i]):
+
+
+            if(lista[i].padre.tipo == "Aleatorio" and padre.tipo == "Aleatorio"):
+                acumulado += lista[i].calificacion
+            if(padre != lista[i-1].padre and padre.tipo == "Aleatorio"):
+                lista[i].padre.calificacion = definirProbabilidad(acumulado)
+                padre = lista[i-1].padre
+                menor = []
+
+            if(lista[i].turno == 2 and lista[i] != padre and lista[i].padre.tipo == "Normal") :
+                menor.append(lista[i])#menor
+            
+            if(lista[i].turno == 1 and lista[i] != padre and lista[i].padre.tipo == "Normal"):
+                menor.append(lista[i])#mayor
                 
-            """if(lista[i].padre.tipo == "Aleatorio" and lista[i].padre == padre):
-                menor.append(lista[i])
-            if(padre == lista[i] and lista[i].tipo == "Aleatorio"):
+            if(lista[i-1].padre != padre and lista[i].turno == 1 and lista[i].tipo == "Normal"):
+                lista[i].calificar(mayorLista(menor))
+                padre = lista[i-1].padre
+                menor=[]
+
+            if(lista[i-1].padre != padre and lista[i].turno == 2 and lista[i].tipo == "Normal"):
                 lista[i].calificar(menorLista(menor))
-            if()"""
+                padre = lista[i-1].padre
+                menor = []
+            
+            if(padre.tipo == "Raiz"):
+                menor.append(lista[i])
+            if(lista[i].padre == padre and padre.tipo == "Raiz"):
+                return lista[i].ataque = ataqueseleccionado(menor)
+                
+            
+
 
 
 
@@ -101,8 +125,8 @@ class Arbol:
 
 
 class Nodo:
-    def __init__(self, pkJugador = None, pkMaquina = None, turno=None, nivel = 0, padre = None, ataque=None):
-        self.tipo = "Normal"
+    def __init__(self, pkJugador = None, pkMaquina = None, turno=None, nivel = 0, padre = None, ataque=None, tipo = "Normal"):
+        self.tipo = tipo
         self.nivel = nivel
         self.turno = turno
         self.pkJugador = pkJugador
@@ -110,7 +134,7 @@ class Nodo:
         self.padre = padre
         self.ataque = ataque
         self.h = 0
-        self.calificacion = 0
+        self.calificacion = self.h
 
         if(turno == 1 and padre!= None):
             self.h = np.random.choice([1,0], p=[ataque.precision / 100, 1-(ataque.precision / 100)]) * pok.damage(pkMaquina.ataque, ataque.potencial, pkJugador.defensa, ataque.tipo, pkMaquina.tipo1, pkMaquina.tipo2)
@@ -119,7 +143,7 @@ class Nodo:
             self.h = np.random.choice([1, 0], p=[ataque.precision / 100, 1-(ataque.precision / 100)]) * pok.damage(pkJugador.ataque, ataque.potencial, pkMaquina.defensa, ataque.tipo, pkJugador.tipo1, pkJugador.tipo2)
 
 
-    def calificar(menor):
+    def calificar(self, menor):
         self.calificacion = menor
         
         
@@ -163,11 +187,25 @@ class Jugador:
 
 ###_______________________________________________Funciones_________________________________________________
 
-def menorLista(lista):
-    menor = lista[0].h
+def ataqueseleccionado(lista):
+    ataque = lista[0].ataque
+
+    print(ataque.nombre)
+    return ataque
+
+def mayorLista(lista):
+    mayor = lista[0].calificacion
     for i in range(1, len(lista)):
-        if(menor > lista[i].h):
-            menor = lista[i].h
+        if(mayor < lista[i].calificacion):
+            mayor = lista[i].calificacion
+
+    return mayor
+
+def menorLista(lista):
+    menor = lista[0].calificacion
+    for i in range(1, len(lista)):
+        if(menor > lista[i].calificacion):
+            menor = lista[i].calificacion
 
     return menor
 
@@ -211,47 +249,15 @@ def jugadaJugador(pokemonJugador = None, pokemonContrincante = None, ataque=[]):
     valorRandom = np.random.choice(limites, p = probabilidades)
     daño = valorRandom *  pok.damage(pokemonJugador.ataque, ataque.potencial, pokemonContrincante.defensa, ataque.tipo, pokemonJugador.tipo1, pokemonJugador.tipo2)
     #print("daño",daño, valorRandom, probabilidad)
-    pokemonContrincante.vida -= daño 
+    #pokemonContrincante.vida -= daño 
     return daño
 
-def iniciarJuego():
-    jugador = Jugador(player)
-    maquina = Jugador(machine)
-    pokemonJugador = jugador.pokemon1
-    pokemonMaquina = maquina.pokemon1
-    turno = 1
 
-    ataqueUsado = ataqueJugador(pokemonJugador.ataque1)
-    jugadaJugador(pokemonJugador, pokemonMaquina, ataqueUsado)
-    #print(pokemonMaquina.vivo)
-
-    while(victoria(jugador, maquina) == False):
-##condicion escojer ´pokemon vivo
-        pokemonJugador = pokemonUsar(jugador.pokemon1, jugador.pokemon2, jugador.pokemon3)
-        pokemonMaquina = pokemonUsar(maquina.pokemon1, maquina.pokemon2, maquina.pokemon3)
-
-        #print(pokemonMaquina)
-        if(turno == 1):
-            turno = 2
-        else:
-            turno = 1
-
-        if (turno == 1):
-            print("inicio",pokemonMaquina.vida)
-            #ataqueUsado = ataqueJugador(pokemonJugador.ataque1)
-            jugadaJugador(pokemonJugador, pokemonMaquina,pokemonJugador.ataque1)
-            print("final", pokemonMaquina.vida)
-
-        if(turno == 2):
-            Arbol(pokemonMaquina, pokemonJugador).NodoObjetivo()
-            
-        break
+def poderMaquina(pokemonMaquina, pokemonContrincante):
+    ataque = Arbol(pokemonMaquina, pokemonContrincante).NodoObjetivo()
+    print(ataque.nombre)
+    return Arbol(pokemonMaquina, pokemonContrincante).NodoObjetivo()
     
-    print("el ganador es ")
-
-    
-
-# iniciarJuego()
 
 
 #H = funcion_daño (precision)
