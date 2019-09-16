@@ -233,7 +233,7 @@ def iniciarJuego():
 
     
 
-iniciarJuego()
+# iniciarJuego()
 
 
 #H = funcion_daño (precision)
